@@ -1,0 +1,31 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/text</item>
+        <item name="android:typeface">sans</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="AppTheme">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:textColorPrimary">@color/text</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:dropDownVerticalOffset">?attr/actionBarSize</item>
+    </style>
+
+    <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/white</item>
+    </style>
+
+</resources>
