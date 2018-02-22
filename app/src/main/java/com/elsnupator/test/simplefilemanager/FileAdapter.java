@@ -1,13 +1,17 @@
 package com.elsnupator.test.simplefilemanager;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -102,6 +106,19 @@ public class FileAdapter extends BaseAdapter {
         else{
             icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_file));
             name.setText(files.get(position-1-folders.size()).getName());
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri uri = Uri.fromFile(files.get(position-1-folders.size()));
+                    String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                            MimeTypeMap.getFileExtensionFromUrl(uri.toString()));
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(uri,mime);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    activity.startActivity(intent);
+                }
+            });
         }
 
         return convertView;

@@ -52,9 +52,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         if(grantResults[0] != PackageManager.PERMISSION_GRANTED)
-            Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, "Yes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "The storage won't be accesible..", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -93,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_refresh:
                 refreshFiles();
+                Toast.makeText(this, "Files refreshed..", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
