@@ -17,11 +17,12 @@
             android:theme="@style/ToolbarStyle"
             app:popupTheme="@style/OverflowMenuStyle"/>
 
-    <ListView
+    <GridView
             android:id="@+id/files_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar"
-            android:padding="3dp"/>
+            android:padding="3dp"
+            android:numColumns="auto_fit"/>
 
 </RelativeLayout>

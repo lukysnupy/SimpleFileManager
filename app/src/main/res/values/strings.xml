@@ -3,4 +3,7 @@
 
     <string name="settings">Settings</string>
     <string name="refresh">Refresh</string>
+    <string name="item_icon">List item icon</string>
+
+    <string name="up">..</string>
 </resources>

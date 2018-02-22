@@ -5,9 +5,14 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.*;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
+
+    private AbsListView filesView;
+    private File currentFolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +21,27 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        filesView = findViewById(R.id.files_view);
+
+
+        currentFolder = getObbDir().getParentFile();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        refreshFiles();
+    }
+
+
+    private void refreshFiles(){
+        new Runnable() {
+            @Override
+            public void run() {
+                filesView.setAdapter(new FileAdapter(currentFolder,MainActivity.this));
+            }
+        }.run();
     }
 
 
@@ -36,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_refresh:
+                refreshFiles();
                 return true;
         }
         return super.onOptionsItemSelected(item);
