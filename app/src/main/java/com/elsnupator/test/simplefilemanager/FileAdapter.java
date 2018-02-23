@@ -26,9 +26,14 @@ public class FileAdapter extends BaseAdapter {
     private List<File> folders = new ArrayList<>();
     private List<File> files = new ArrayList<>();
     private MainActivity activity;
+    private byte offset;
 
-    FileAdapter(File currentFolder, MainActivity mainActivity){
+    FileAdapter(File currentFolder, boolean homeFolder, MainActivity mainActivity){
         this.currentFolder = currentFolder;
+        if(homeFolder)
+            offset = 1;
+        else
+            offset = 2;
         this.activity = mainActivity;
         File[] foldersArray = currentFolder.listFiles(new FileFilter() {
             @Override
@@ -52,15 +57,15 @@ public class FileAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return folders.size() + files.size() + 1;
+        return folders.size() + files.size() + offset;
     }
 
     @Override
     public Object getItem(int position) {
         if(position > folders.size())
-            return files.get(position-1-folders.size());
+            return files.get(position-offset-folders.size());
         else if(position > 0)
-            return folders.get(position-1);
+            return folders.get(position-offset);
         else
             return null;
     }
@@ -81,35 +86,48 @@ public class FileAdapter extends BaseAdapter {
         ImageView icon = convertView.findViewById(R.id.row_icon);
         TextView name = convertView.findViewById(R.id.row_name);
 
-        if(position == 0){
-            icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_up));
-            name.setText(activity.getResources().getString(R.string.up));
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!currentFolder.getName().equals(""))
-                        activity.setCurrentFolder(currentFolder.getParentFile());
-                }
-            });
+        if(position < offset){
+            if(position == 0 && offset == 2){
+                icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_home));
+                name.setText(activity.getResources().getString(R.string.home));
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!currentFolder.getName().equals(""))
+                            activity.setDefaultFolder();
+                    }
+                });
+            }
+            else{
+                icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_up));
+                name.setText(activity.getResources().getString(R.string.up));
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!currentFolder.getName().equals(""))
+                            activity.setCurrentFolder(currentFolder.getParentFile());
+                    }
+                });
+            }
         }
-        else if(position <= folders.size()){
+        else if(position-offset < folders.size()){
             icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_folder));
-            name.setText(folders.get(position-1).getName());
+            name.setText(folders.get(position-offset).getName());
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     activity.setCurrentFolder(new File(currentFolder.getAbsolutePath() + File.separator +
-                            folders.get(position-1).getName()));
+                            folders.get(position-offset).getName()));
                 }
             });
         }
         else{
             icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_file));
-            name.setText(files.get(position-1-folders.size()).getName());
+            name.setText(files.get(position-offset-folders.size()).getName());
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Uri uri = Uri.fromFile(files.get(position-1-folders.size()));
+                    Uri uri = Uri.fromFile(files.get(position-offset-folders.size()));
                     String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                             MimeTypeMap.getFileExtensionFromUrl(uri.toString()));
                     Intent intent = new Intent();

@@ -5,7 +5,8 @@
     <string name="refresh">Refresh</string>
     <string name="item_icon">List item icon</string>
 
-    <string name="up">..</string>
+    <string name="up">../</string>
+    <string name="home">/</string>
 
     <string name="internal_storage_path">/storage/emulated/0</string>
 </resources>

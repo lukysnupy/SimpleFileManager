@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AbsListView filesView;
     private File currentFolder;
+    private File defaultFolder;
     private static final String TAG = "MainActivity";
 
     @Override
@@ -40,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        currentFolder = new File("/");
+        defaultFolder = new File("/");
+        currentFolder = new File(defaultFolder.getAbsolutePath());
     }
 
     @Override
@@ -60,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         new Runnable() {
             @Override
             public void run() {
-                filesView.setAdapter(new FileAdapter(currentFolder,MainActivity.this));
+                filesView.setAdapter(new FileAdapter(currentFolder, currentFolder.getAbsolutePath()
+                        .equals(defaultFolder.getAbsolutePath()), MainActivity.this));
             }
         }.run();
         Log.i(TAG,"Files refreshed");
@@ -70,6 +73,12 @@ public class MainActivity extends AppCompatActivity {
     void setCurrentFolder(File folder){
         this.currentFolder = folder;
         Log.i(TAG,"Current folder: " + folder.getAbsolutePath());
+        refreshFiles();
+    }
+
+    void setDefaultFolder(){
+        this.currentFolder = new File(defaultFolder.getAbsolutePath());
+        Log.i(TAG,"Current folder: " + defaultFolder.getAbsolutePath());
         refreshFiles();
     }
 
