@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
         setDefaultPath();
         currentFolder = new File(defaultFolder.getAbsolutePath());
+        filesAdapter = new FileAdapter(currentFolder, currentFolder.getAbsolutePath()
+                .equals(defaultFolder.getAbsolutePath()), MainActivity.this);
 
         setActionMode();
 
