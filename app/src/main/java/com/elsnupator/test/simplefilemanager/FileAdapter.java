@@ -139,6 +139,10 @@ public class FileAdapter extends BaseAdapter {
 
     // Selections
 
+    /**
+     * Called when item is selected in Action mode
+     * @param position clicked file position in list
+     */
     void itemSelect(int position){
         boolean isSelected = false;
         for (String fileName : selectedItems) {
@@ -155,15 +159,26 @@ public class FileAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    /**
+     * Removes all selected files (-> when setting Action mode off)
+     */
     void removeSelection(){
         selectedItems = new HashSet<>();
         notifyDataSetChanged();
     }
 
+    /**
+     * Returns files selected in Action mode
+     * @return selected files set
+     */
     Set<String> getSelectedItems(){
         return selectedItems;
     }
 
+    /**
+     * Returns selected files count
+     * @return selected files count
+     */
     int getSelectedCount(){
         return selectedItems.size();
     }

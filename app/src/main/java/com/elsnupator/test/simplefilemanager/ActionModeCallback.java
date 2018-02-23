@@ -1,6 +1,5 @@
 package com.elsnupator.test.simplefilemanager;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -19,7 +18,7 @@ import java.util.Set;
 
 public class ActionModeCallback implements ActionMode.Callback{
 
-    MainActivity activity;
+    private MainActivity activity;
     private FileAdapter filesAdapter;
     private String currentPath;
 
@@ -65,7 +64,11 @@ public class ActionModeCallback implements ActionMode.Callback{
         activity.unsetActionMode();
     }
 
-
+    /**
+     * List files to delete from entered Set. Folders are searched through deeper in structure.
+     * @param selectedFiles files selected by user
+     * @return list of files to delete - should be deleted from last
+     */
     private List<File> listFilesToDelete(Set<String> selectedFiles){
         List<File> filesToDelete = new ArrayList<>();
         List<File> folders = new ArrayList<>();
@@ -97,6 +100,9 @@ public class ActionModeCallback implements ActionMode.Callback{
         return filesToDelete;
     }
 
+    /**
+     * Async task for deleting entered files
+     */
     private class DeleteAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private ProgressDialog progressDialog;

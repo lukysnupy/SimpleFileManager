@@ -78,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         unsetActionMode();
     }
-    
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
-        if(grantResults[0] != PackageManager.PERMISSION_GRANTED)
+        if(grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED)
             Toast.makeText(this, "The storage won't be accesible..", Toast.LENGTH_SHORT).show();
     }
 
@@ -115,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Activity initialization
 
+    /**
+     * Inits default path from shared preferences
+     */
     private void setDefaultPath(){
         String internalStoragePath = getObbDir().getParentFile().getParentFile().getParentFile()
                 .getAbsolutePath();
@@ -123,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
                 getResources().getString(R.string.default_folder_key),internalStoragePath));
     }
 
+    /**
+     * Inits animations of files ListView/GridView during refreshing
+     */
     private void setAnimations(){
         fadeOut = new AlphaAnimation(1,0);
         fadeOut.setDuration(50);
@@ -142,6 +148,9 @@ public class MainActivity extends AppCompatActivity {
         animationIn.addAnimation(fadeIn);
     }
 
+    /**
+     * Inits on item clicks from files ListView/GridView, inits Action mode
+     */
     private void setActionMode(){
         filesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -182,6 +191,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Files list changing
 
+    /**
+     * Refreshes files ListView/GridView
+     */
     void refreshFiles(){
         unsetActionMode();
         new Runnable() {
@@ -199,12 +211,19 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG,"Files refreshed");
     }
 
+    /**
+     * Sets current folder to entered
+     * @param folder folder to be current
+     */
     void setCurrentFolder(File folder){
         this.currentFolder = folder;
         Log.i(TAG,"Current folder: " + folder.getAbsolutePath());
         refreshFiles();
     }
 
+    /**
+     * Sets deafult folder as current
+     */
     void setDefaultFolder(){
         this.currentFolder = new File(defaultFolder.getAbsolutePath());
         Log.i(TAG,"Current folder: " + defaultFolder.getAbsolutePath());
@@ -215,6 +234,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Methods for Action mode (CAB)
 
+    /**
+     * Called when Action mode is on or is to be set on
+     * @param position clicked file position in list
+     */
     private void listItemSelect(int position){
         filesAdapter.itemSelect(position);
         boolean hasCheckedItems = filesAdapter.getSelectedCount() > 0;
@@ -228,12 +251,19 @@ public class MainActivity extends AppCompatActivity {
             actionMode.setTitle(filesAdapter.getSelectedCount() + " selected items");
     }
 
+    /**
+     * Disbales Action mode
+     */
     void unsetActionMode(){
         filesAdapter.removeSelection();
         if(actionMode != null)
             actionMode = null;
     }
 
+    /**
+     * Returns Action mode object
+     * @return action mode
+     */
     ActionMode getActionMode(){
         return actionMode;
     }
