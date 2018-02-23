@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar"
             android:padding="3dp"
+            android:columnWidth="200dp"
             android:numColumns="auto_fit"/>
 
 </RelativeLayout>
