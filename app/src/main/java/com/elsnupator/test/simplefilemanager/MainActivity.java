@@ -14,6 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.*;
 
 import java.io.File;
@@ -24,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private File currentFolder;
     private File defaultFolder;
     private static final String TAG = "MainActivity";
+
+    private Animation fadeOut;
+    private AnimationSet animationIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
         setDefaultPath();
         currentFolder = new File(defaultFolder.getAbsolutePath());
+
+        setAnimations();
     }
 
     @Override
@@ -68,17 +77,39 @@ public class MainActivity extends AppCompatActivity {
                 getResources().getString(R.string.default_folder_key),internalStoragePath));
     }
 
+    private void setAnimations(){
+        fadeOut = new AlphaAnimation(1,0);
+        fadeOut.setDuration(50);
+        fadeOut.setFillAfter(true);
+
+        Animation scaleIn = new ScaleAnimation(0.95f, 1f, 0.95f, 1f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleIn.setStartOffset(50);
+        scaleIn.setDuration(150);
+        Animation fadeIn = new AlphaAnimation(0,1);
+        fadeIn.setStartOffset(50);
+        fadeIn.setDuration(100);
+        fadeIn.setFillAfter(true);
+
+        animationIn = new AnimationSet(true);
+        animationIn.addAnimation(scaleIn);
+        animationIn.addAnimation(fadeIn);
+    }
+
     private void refreshFiles(){
         new Runnable() {
             @Override
             public void run() {
+                filesView.startAnimation(fadeOut);
+
                 filesView.setAdapter(new FileAdapter(currentFolder, currentFolder.getAbsolutePath()
                         .equals(defaultFolder.getAbsolutePath()), MainActivity.this));
+
+                filesView.startAnimation(animationIn);
             }
         }.run();
         Log.i(TAG,"Files refreshed");
     }
-
 
     void setCurrentFolder(File folder){
         this.currentFolder = folder;
