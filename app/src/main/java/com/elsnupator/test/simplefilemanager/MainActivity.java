@@ -1,8 +1,10 @@
 package com.elsnupator.test.simplefilemanager;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -41,13 +43,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        defaultFolder = new File("/");
+        setDefaultPath();
         currentFolder = new File(defaultFolder.getAbsolutePath());
     }
 
     @Override
     protected void onResume(){
         super.onResume();
+        setDefaultPath();
         refreshFiles();
     }
     
@@ -57,6 +60,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "The storage won't be accesible..", Toast.LENGTH_SHORT).show();
     }
 
+    private void setDefaultPath(){
+        String internalStoragePath = getObbDir().getParentFile().getParentFile().getParentFile()
+                .getAbsolutePath();
+
+        defaultFolder = new File(PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getString(
+                getResources().getString(R.string.default_folder_key),internalStoragePath));
+    }
 
     private void refreshFiles(){
         new Runnable() {
@@ -95,8 +105,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.action_settings:
-                // Open Settings activity
-                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                Log.i(TAG,"Directing to Settings activity..");
+                startActivity(intent);
                 return true;
             case R.id.action_refresh:
                 refreshFiles();

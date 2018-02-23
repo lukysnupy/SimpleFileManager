@@ -9,4 +9,11 @@
     <string name="home">/</string>
 
     <string name="internal_storage_path">/storage/emulated/0</string>
+
+    <string name="settings_activity_title">Settings</string>
+    <string name="settings_default_category">Defaults</string>
+    <string name="settings_default_folder">Set default (home) folder</string>
+    <string name="settings_default_folder_dialog">Choose folder..</string>
+
+    <string name="default_folder_key">default_folder</string>
 </resources>

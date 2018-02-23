@@ -27,10 +27,14 @@ public class FileAdapter extends BaseAdapter {
     private List<File> files = new ArrayList<>();
     private MainActivity activity;
     private byte offset;
+    private boolean homeFolder;
 
     FileAdapter(File currentFolder, boolean homeFolder, MainActivity mainActivity){
         this.currentFolder = currentFolder;
-        if(homeFolder)
+        this.homeFolder = homeFolder;
+        if(homeFolder && currentFolder.getName().equals(""))
+            offset = 0;
+        else if(homeFolder || currentFolder.getName().equals(""))
             offset = 1;
         else
             offset = 2;
@@ -87,14 +91,13 @@ public class FileAdapter extends BaseAdapter {
         TextView name = convertView.findViewById(R.id.row_name);
 
         if(position < offset){
-            if(position == 0 && offset == 2){
+            if(position == 0 && !homeFolder){
                 icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_home));
                 name.setText(activity.getResources().getString(R.string.home));
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!currentFolder.getName().equals(""))
-                            activity.setDefaultFolder();
+                        activity.setDefaultFolder();
                     }
                 });
             }
