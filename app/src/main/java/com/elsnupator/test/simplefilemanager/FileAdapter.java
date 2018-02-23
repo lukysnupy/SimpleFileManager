@@ -1,24 +1,16 @@
 package com.elsnupator.test.simplefilemanager;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
+import android.view.*;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class FileAdapter extends BaseAdapter {
 
@@ -28,6 +20,9 @@ public class FileAdapter extends BaseAdapter {
     private MainActivity activity;
     private byte offset;
     private boolean homeFolder;
+
+    private Set<String> selectedItems = new HashSet<>();
+
 
     FileAdapter(File currentFolder, boolean homeFolder, MainActivity mainActivity){
         this.currentFolder = currentFolder;
@@ -66,12 +61,12 @@ public class FileAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        if(position > folders.size())
-            return files.get(position-offset-folders.size());
-        else if(position > 0)
+        if(position < offset)
+            return null;
+        else if(position-offset < folders.size())
             return folders.get(position-offset);
         else
-            return null;
+            return files.get(position-offset-folders.size());
     }
 
     @Override
@@ -97,7 +92,8 @@ public class FileAdapter extends BaseAdapter {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        activity.setDefaultFolder();
+                        if(activity.getActionMode() == null)
+                            activity.setDefaultFolder();
                     }
                 });
             }
@@ -107,41 +103,68 @@ public class FileAdapter extends BaseAdapter {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!currentFolder.getName().equals(""))
-                            activity.setCurrentFolder(currentFolder.getParentFile());
+                        if(activity.getActionMode() == null)
+                            if(!currentFolder.getName().equals(""))
+                                activity.setCurrentFolder(currentFolder.getParentFile());
                     }
                 });
             }
         }
-        else if(position-offset < folders.size()){
-            icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_folder));
-            name.setText(folders.get(position-offset).getName());
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    activity.setCurrentFolder(new File(currentFolder.getAbsolutePath() + File.separator +
-                            folders.get(position-offset).getName()));
-                }
-            });
-        }
         else{
-            icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_file));
-            name.setText(files.get(position-offset-folders.size()).getName());
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri uri = Uri.fromFile(files.get(position-offset-folders.size()));
-                    String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                            MimeTypeMap.getFileExtensionFromUrl(uri.toString()));
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(uri,mime);
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    activity.startActivity(intent);
-                }
-            });
+            File file;
+            if(position-offset < folders.size()){
+                icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_folder));
+                file = folders.get(position-offset);
+            }
+            else{
+                icon.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.icon_file));
+                file = files.get(position-offset-folders.size());
+            }
+            name.setText(file.getName());
+
+            if(selectedItems.contains(file.getName())){
+                convertView.setBackgroundColor(ContextCompat.getColor(activity,R.color.colorPrimary));
+                name.setTextColor(ContextCompat.getColor(activity,R.color.white));
+            }
+            else {
+                convertView.setBackgroundColor(Color.TRANSPARENT);
+                name.setTextColor(ContextCompat.getColor(activity,R.color.text));
+            }
         }
 
         return convertView;
+    }
+
+
+
+    // Selections
+
+    void itemSelect(int position){
+        boolean isSelected = false;
+        for (String fileName : selectedItems) {
+            if(fileName.equals(((File)getItem(position)).getName())){
+                isSelected = true;
+                break;
+            }
+        }
+        if(!isSelected)
+            selectedItems.add(((File)getItem(position)).getName());
+        else
+            selectedItems.remove(((File)getItem(position)).getName());
+
+        notifyDataSetChanged();
+    }
+
+    void removeSelection(){
+        selectedItems = new HashSet<>();
+        notifyDataSetChanged();
+    }
+
+    Set<String> getSelectedItems(){
+        return selectedItems;
+    }
+
+    int getSelectedCount(){
+        return selectedItems.size();
     }
 }
